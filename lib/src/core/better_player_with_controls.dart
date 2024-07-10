@@ -118,7 +118,12 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
       rotation = 0;
     }
     if (betterPlayerController.betterPlayerDataSource == null) {
-      return Container();
+
+      if(configuration.preInitLoadingWidgetBuilder==null){
+        return Container();
+      } else{
+        return Container(child: configuration.preInitLoadingWidgetBuilder!(context),);
+      }
     }
     _initialized = true;
 

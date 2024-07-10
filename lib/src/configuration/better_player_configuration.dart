@@ -20,6 +20,7 @@ class BetterPlayerConfiguration {
   final Widget Function(BuildContext context, String? errorMessage)?
       errorBuilder;
 
+  final Widget Function(BuildContext context)? preInitLoadingWidgetBuilder;
   /// The Aspect Ratio of the Video. Important to get the correct size of the
   /// video!
   ///
@@ -156,6 +157,7 @@ class BetterPlayerConfiguration {
     this.autoDispose = true,
     this.expandToFill = true,
     this.useRootNavigator = false,
+    this.preInitLoadingWidgetBuilder,
   });
 
   BetterPlayerConfiguration copyWith({

@@ -62,6 +62,7 @@ class _BetterPlayerMaterialControlsState
     return buildLTRDirectionality(_buildMainWidget());
   }
 
+  final controlopc=0.7;
   ///Builds main widget of the controls.
   Widget _buildMainWidget() {
     _wasLoading = isLoading(_latestValue);
@@ -190,20 +191,28 @@ class _BetterPlayerMaterialControlsState
     return Container(
       child: (_controlsConfiguration.enableOverflowMenu)
           ? AnimatedOpacity(
-              opacity: controlsNotVisible ? 0.0 : 1.0,
+              opacity: controlsNotVisible ? 0.0 : controlopc,
               duration: _controlsConfiguration.controlsHideTime,
               onEnd: _onPlayerHide,
               child: Container(
                 height: _controlsConfiguration.controlBarHeight,
                 width: double.infinity,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment:
+                      _controlsConfiguration.leftTopBarBuilder != null
+                          ? MainAxisAlignment.spaceBetween
+                          : MainAxisAlignment.end,
                   children: [
+                    /*
                     if (_controlsConfiguration.enablePip)
                       _buildPipButtonWrapperWidget(
                           controlsNotVisible, _onPlayerHide)
                     else
                       const SizedBox(),
+                      */
+                    _controlsConfiguration.leftTopBarBuilder != null
+                        ? _controlsConfiguration.leftTopBarBuilder!()
+                        : const SizedBox(),
                     _buildMoreButton(),
                   ],
                 ),
@@ -238,7 +247,7 @@ class _BetterPlayerMaterialControlsState
         if (isPipSupported &&
             _betterPlayerController!.betterPlayerGlobalKey != null) {
           return AnimatedOpacity(
-            opacity: hideStuff ? 0.0 : 1.0,
+            opacity: hideStuff ? 0.0 : controlopc,
             duration: betterPlayerControlsConfiguration.controlsHideTime,
             onEnd: onPlayerHide,
             child: Container(
@@ -278,7 +287,7 @@ class _BetterPlayerMaterialControlsState
       return const SizedBox();
     }
     return AnimatedOpacity(
-      opacity: controlsNotVisible ? 0.0 : 1.0,
+      opacity: controlsNotVisible ? 0.0 : controlopc,
       duration: _controlsConfiguration.controlsHideTime,
       onEnd: _onPlayerHide,
       child: Container(
@@ -339,7 +348,7 @@ class _BetterPlayerMaterialControlsState
       child: BetterPlayerMaterialClickableWidget(
         onTap: _onExpandCollapse,
         child: AnimatedOpacity(
-          opacity: controlsNotVisible ? 0.0 : 1.0,
+          opacity: controlsNotVisible ? 0.0 : controlopc,
           duration: _controlsConfiguration.controlsHideTime,
           child: Container(
             height: _controlsConfiguration.controlBarHeight,
@@ -365,7 +374,7 @@ class _BetterPlayerMaterialControlsState
     return Container(
       child: Center(
         child: AnimatedOpacity(
-          opacity: controlsNotVisible ? 0.0 : 1.0,
+          opacity: controlsNotVisible ? 0.0 : controlopc,
           duration: _controlsConfiguration.controlsHideTime,
           child: _buildMiddleRow(),
         ),
@@ -529,7 +538,7 @@ class _BetterPlayerMaterialControlsState
         }
       },
       child: AnimatedOpacity(
-        opacity: controlsNotVisible ? 0.0 : 1.0,
+        opacity: controlsNotVisible ? 0.0 : controlopc,
         duration: _controlsConfiguration.controlsHideTime,
         child: ClipRect(
           child: Container(
@@ -547,6 +556,7 @@ class _BetterPlayerMaterialControlsState
     );
   }
 
+/*
   Widget _buildPlayPause(VideoPlayerController controller) {
     return BetterPlayerMaterialClickableWidget(
       key: const Key("better_player_material_controls_play_pause_button"),
@@ -563,6 +573,70 @@ class _BetterPlayerMaterialControlsState
         ),
       ),
     );
+  }
+  */
+  Widget _buildPlayPause(VideoPlayerController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        _controlsConfiguration.onPlayPrevious!=null ?
+        BetterPlayerMaterialClickableWidget(
+          key:
+              const Key("better_player_material_controls_play_previous_button"),
+          onTap: _onPlayPrevious,
+          child: Container(
+            height: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(
+              Icons.skip_previous,
+              color: Colors.white,
+            ),
+          ),
+        ):SizedBox(),
+        BetterPlayerMaterialClickableWidget(
+          key: const Key("better_player_material_controls_play_pause_button"),
+          onTap: _onPlayPause,
+          child: Container(
+            height: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(
+              controller.value.isPlaying
+                  ? _controlsConfiguration.pauseIcon
+                  : _controlsConfiguration.playIcon,
+              color: _controlsConfiguration.iconsColor,
+            ),
+          ),
+        ),
+        _controlsConfiguration.onPlayNext!=null ?
+        BetterPlayerMaterialClickableWidget(
+          key: const Key("better_player_material_controls_play_next_button"),
+          onTap: _onPlayNext,
+          child: Container(
+            height: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(
+              Icons.skip_next,
+              color: Colors.white,
+            ),
+          ),
+        ) :SizedBox(),
+      ],
+    );
+  }
+
+  void _onPlayNext() {
+    if (_controlsConfiguration.onPlayNext != null) {
+      _controlsConfiguration.onPlayNext!();
+    }
+  }
+
+  void _onPlayPrevious() {
+    if (_controlsConfiguration.onPlayPrevious != null) {
+      _controlsConfiguration.onPlayPrevious!();
+    }
   }
 
   Widget _buildPosition() {
@@ -687,7 +761,9 @@ class _BetterPlayerMaterialControlsState
           _latestValue = _controller!.value;
           if (isVideoFinished(_latestValue) &&
               _betterPlayerController?.isLiveStream() == false) {
-            changePlayerControlsNotVisible(false);
+            if (_controlsConfiguration.isLastVideo) {
+              changePlayerControlsNotVisible(false); //changed. by benny
+            }
           }
         });
       }

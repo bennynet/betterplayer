@@ -18,6 +18,9 @@ class _ControlsAlwaysVisiblePageState extends State<ControlsAlwaysVisiblePage> {
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
       handleLifecycle: true,
+          preInitLoadingWidgetBuilder: (_){
+        return Center(child: Text("loading....",style: TextStyle(color: Colors.white,fontSize: 16),),) ;
+          }
     );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _setupDataSource();

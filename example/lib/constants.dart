@@ -25,7 +25,7 @@ class Constants {
   static const String phantomVideoUrl =
       "http://sample.vodobox.com/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8";
   static const String elephantDreamVideoUrl =
-      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4";
+      "http://www.yihaobiaoju.com:8080/file?fileid=664b313a47c5244519fd4bfd8179721b7dc64aa2";
   static const String forBiggerJoyridesVideoUrl =
       "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4";
   static const String verticalVideoUrl =
